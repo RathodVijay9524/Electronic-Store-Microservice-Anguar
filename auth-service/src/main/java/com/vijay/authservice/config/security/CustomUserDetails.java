@@ -17,11 +17,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 @Getter
 @Setter
 public class CustomUserDetails implements UserDetails {
-
     /**
      *
      */
@@ -33,7 +31,6 @@ public class CustomUserDetails implements UserDetails {
     private String email;
     private Set<Role> roles;
     private List<Worker> workers;
-
     public CustomUserDetails(String id,String name,String username, String password, String email, Set<Role> roles, List<Worker> workers) {
         this.id = id;
         this.name = name;
@@ -43,7 +40,6 @@ public class CustomUserDetails implements UserDetails {
         this.roles = roles;
         this.workers = workers;
     }
-
     public static CustomUserDetails build(User user) {
         return new CustomUserDetails(
                 user.getUserId(),
@@ -55,7 +51,6 @@ public class CustomUserDetails implements UserDetails {
                 user.getWorkers()
         );
     }
-
     public static CustomUserDetails build(Worker worker) {
         return new CustomUserDetails(
                 worker.getWorkerId(),
@@ -67,16 +62,12 @@ public class CustomUserDetails implements UserDetails {
                 null // Workers don't have associated workers, so set it to null
         );
     }
-
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toList());
     }
-
     @Override
     public String getPassword() {
         return password;

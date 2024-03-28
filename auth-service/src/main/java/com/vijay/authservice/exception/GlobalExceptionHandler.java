@@ -23,13 +23,14 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorDetails> handleResourceNotFoundExc(ResourceNotFoundException exc,
 			WebRequest webRequest) {
+		log.info("Resource Not Found..");
 		ErrorDetails errorDetails = new ErrorDetails(new Date(), exc.getMessage(), webRequest.getDescription(false));
 		return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(BadApiRequestException.class)
 	public ResponseEntity<ApiResponseMessage> handleBadApiRequest(BadApiRequestException ex) {
-		log.info("Bad api request");
+		log.info("Bad api request..");
 		ApiResponseMessage response = ApiResponseMessage.builder().message(ex.getMessage())
 				.status(HttpStatus.BAD_REQUEST).success(false).build();
 		return new ResponseEntity<ApiResponseMessage>(response, HttpStatus.BAD_REQUEST);
@@ -38,12 +39,14 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(AuthUserApiException.class)
 	public ResponseEntity<ErrorDetails> handleRBlogAPIException(AuthUserApiException exc, WebRequest webRequest) {
+		log.info("Auth Api Exceptions..");
 		ErrorDetails errorDetails = new ErrorDetails(new Date(), exc.getMessage(), webRequest.getDescription(false));
 		return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorDetails> handleGlobalException(Exception exc, WebRequest webRequest) {
+		log.info("Auth Api Exceptions..");
 		ErrorDetails errorDetails = new ErrorDetails(new Date(), exc.getMessage(), webRequest.getDescription(false));
 		return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
