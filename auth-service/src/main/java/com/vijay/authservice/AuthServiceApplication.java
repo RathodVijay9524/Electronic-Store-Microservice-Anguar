@@ -7,7 +7,8 @@ import com.vijay.authservice.repository.RoleRepo;
 import com.vijay.authservice.repository.UserRepository;
 import com.vijay.authservice.repository.WorkerRepository;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -20,22 +21,15 @@ import java.util.UUID;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@AllArgsConstructor
 public class AuthServiceApplication {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final WorkerRepository workerRepository;
     private final RoleRepo roleRepository;
-
-    public AuthServiceApplication(PasswordEncoder passwordEncoder, UserRepository userRepository,
-                                  WorkerRepository workerRepository, RoleRepo roleRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-        this.workerRepository = workerRepository;
-        this.roleRepository = roleRepository;
-    }
-
     public static void main(String[] args) {
+
         SpringApplication.run(AuthServiceApplication.class, args);
     }
 
