@@ -21,8 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.HashSet;
-
-
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -35,10 +33,6 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepo roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    @Override
-    public void validateToken(String token) {
-        jwtTokenProvider.validateToken(token);
-    }
 
     @Override
     public LoginJWTResponse login(LoginRequest req) {
@@ -55,14 +49,12 @@ public class AuthServiceImpl implements AuthService {
                 .user(response)
                 .build();
     }
-
     @Override
     public String register(RegistrationRequest req) {
         // Add check for username exists in database
         if (userRepository.existsByUsername(req.getUsername())) {
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Username already exists.");
         }
-
         // Add check for email exists in database
         if (userRepository.existsByEmail(req.getEmail())) {
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Email already exists.");
@@ -75,22 +67,17 @@ public class AuthServiceImpl implements AuthService {
                 .username(req.getUsername())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .build();
-
         // Fetch the user role from the repository
         Role userRole = roleRepository.findByRoleName("ROLE_NORMAL")
                 .orElseThrow(() -> new AuthUserApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Default role not found."));
-
         // Initialize the roles field if it's null
         if (user.getRoles() == null) {
             user.setRoles(new HashSet<>());
         }
-
         // Add the user role to the roles set
         user.getRoles().add(userRole);
-
         // Save the user to the database
         userRepository.save(user);
-
         return "User registered successfully.";
     }
 
@@ -100,22 +87,18 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByUsername(req.getUsername())) {
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Username is already exists!.");
         }
-
         // add check for email exists in database
         if (userRepository.existsByEmail(req.getEmail())) {
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
         }
-
         UserDto currentUser = userService.getCurrentUser();
         User user = mapper.map(currentUser, User.class);
-
         Worker worker = Worker.builder()
                 .name(req.getName())
                 .email(req.getEmail())
                 .username(req.getUsername())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .build();
-
         // Fetch the worker role from the repository
         Role workerRole = roleRepository.findByRoleName("ROLE_WORKER")
                 .orElseThrow(() -> new AuthUserApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Worker role not found."));
@@ -128,6 +111,10 @@ public class AuthServiceImpl implements AuthService {
         worker.setUser(user);
         workerRepository.save(worker);
         return mapper.map(worker, RegistrationResponse.class);
-
     }
+    @Override
+    public void validateToken(String token) {
+        jwtTokenProvider.validateToken(token);
+    }
+
 }

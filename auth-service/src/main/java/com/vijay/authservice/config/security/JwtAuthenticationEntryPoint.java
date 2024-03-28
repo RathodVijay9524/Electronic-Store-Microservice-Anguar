@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+// note:- do not need of this class in microservices, ignore this class
+// we can use this in monolithic Architecture
+
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
