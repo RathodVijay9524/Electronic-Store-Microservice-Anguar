@@ -21,9 +21,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.HashSet;
+/**
+ * Service implementation for authentication-related operations.
+ */
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
     private final UserDetailsService userDetailsService;
     private final UserService userService;
     private final ModelMapper mapper;
@@ -34,6 +38,12 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * Logs in a user using the provided login request.
+     *
+     * @param req Login request containing username/email and password.
+     * @return LoginJWTResponse containing JWT token and user details upon successful authentication.
+     */
     @Override
     public LoginJWTResponse login(LoginRequest req) {
         Authentication authentication = authenticationManager.authenticate(
@@ -49,6 +59,14 @@ public class AuthServiceImpl implements AuthService {
                 .user(response)
                 .build();
     }
+
+    /**
+     * Registers a new user using the provided registration request.
+     *
+     * @param req Registration request containing user details.
+     * @return Success message upon successful registration.
+     * @throws AuthUserApiException if the username or email already exists or if the default role is not found.
+     */
     @Override
     public String register(RegistrationRequest req) {
         // Add check for username exists in database
@@ -81,6 +99,14 @@ public class AuthServiceImpl implements AuthService {
         return "User registered successfully.";
     }
 
+    /**
+     * Registers a new worker using the provided registration request.
+     *
+     * @param req Registration request containing worker details.
+     * @return RegistrationResponse containing worker details upon successful registration.
+     * @throws AuthUserApiException if the username or email already exists, if the worker role is not found,
+     *                              or if the current user cannot be retrieved.
+     */
     @Override
     public RegistrationResponse registerWorker(RegistrationRequest req) {
         // add check for username exists in database
@@ -112,9 +138,14 @@ public class AuthServiceImpl implements AuthService {
         workerRepository.save(worker);
         return mapper.map(worker, RegistrationResponse.class);
     }
+
+    /**
+     * Validates the authenticity of the provided JWT token.
+     *
+     * @param token JWT token to validate.
+     */
     @Override
     public void validateToken(String token) {
         jwtTokenProvider.validateToken(token);
     }
-
 }
