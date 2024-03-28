@@ -22,15 +22,12 @@ import java.util.Optional;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;
-
     @Autowired
     private WorkerRepository workerRepository;
-
     @Autowired
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail);

@@ -15,6 +15,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+// note:- do not need of this class in microservices, ignore this class
+// we can use this in monolithic Architecture
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
