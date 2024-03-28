@@ -11,12 +11,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SpringSecurityConfig {
 
-
+    // Define AuthenticationManager bean
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
+    // Define SecurityFilterChain bean
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -24,7 +24,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()
                         authorize.requestMatchers("/api/auth/**").permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().authenticated()  // Require authentication for all other requests
 
                 );
         return http.build();
