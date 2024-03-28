@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService{
     private final ModelMapper mapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
     @Override
     public UserDto getCurrentUser() {
         // Retrieve the current authentication object
@@ -52,16 +51,12 @@ public class UserServiceImpl implements UserService{
         }
         return mapper.map(userDetails, UserDto.class);
     }
-
-
-
     @Override
     public UserDto findUserById(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
         return mapper.map(user, UserDto.class);
     }
-
     @Override
     public UserDto updateUser(String userId, UserDto userDto) {
         User user = userRepository.findById(userId)
@@ -76,19 +71,15 @@ public class UserServiceImpl implements UserService{
         User updatedUser = userRepository.save(user);
         return mapper.map(updatedUser, UserDto.class);
     }
-
     @Override
     public void deleteUserById(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
         userRepository.delete(user);
-
     }
-
     @Override
     public UserDto getUserByEmail(String email) {
         Optional<User> findByEmail = userRepository.findByEmail(email);
-
         try {
             User user = findByEmail.orElseThrow();
             return mapper.map(user, UserDto.class);
@@ -96,7 +87,6 @@ public class UserServiceImpl implements UserService{
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "User Email Is NotFound");
         }
     }
-
     @Override
     public List<UserDto> searchUser(String keywords) {
         List<User> users = userRepository.findByNameContaining(keywords);
