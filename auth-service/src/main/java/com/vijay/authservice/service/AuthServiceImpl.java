@@ -96,8 +96,38 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RegistrationResponse registerWorker(RegistrationRequest req) {
-        return null;
+        // add check for username exists in database
+        if (userRepository.existsByUsername(req.getUsername())) {
+            throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Username is already exists!.");
+        }
+
+        // add check for email exists in database
+        if (userRepository.existsByEmail(req.getEmail())) {
+            throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
+        }
+
+        UserDto currentUser = userService.getCurrentUser();
+        User user = mapper.map(currentUser, User.class);
+
+        Worker worker = Worker.builder()
+                .name(req.getName())
+                .email(req.getEmail())
+                .username(req.getUsername())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .build();
+
+        // Fetch the worker role from the repository
+        Role workerRole = roleRepository.findByRoleName("ROLE_WORKER")
+                .orElseThrow(() -> new AuthUserApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Worker role not found."));
+        // Initialize the roles field if it's null
+        if (worker.getRoles() == null) {
+            worker.setRoles(new HashSet<>());
+        }
+        // Add the worker role to the roles set
+        worker.getRoles().add(workerRole);
+        worker.setUser(user);
+        workerRepository.save(worker);
+        return mapper.map(worker, RegistrationResponse.class);
+
     }
-
-
 }
