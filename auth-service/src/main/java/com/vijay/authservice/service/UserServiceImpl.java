@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Searches for users based on the provided keywords.
      *
-     * @param keywords Keywords to search for in user names.
+     * @param keywords Keywords to search for in usernames.
      * @return List of UserDto representing the users matching the search criteria.
      */
     @Override
