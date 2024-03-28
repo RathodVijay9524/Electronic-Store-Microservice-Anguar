@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class RegistrationRequest {
+    private String workerId;
     private String name;
     private String username;
     private String email;

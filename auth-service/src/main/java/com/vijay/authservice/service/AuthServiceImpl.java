@@ -21,6 +21,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.HashSet;
+import java.util.UUID;
+
 /**
  * Service implementation for authentication-related operations.
  */
@@ -46,14 +48,23 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public LoginJWTResponse login(LoginRequest req) {
+        // Perform authentication using AuthenticationManager
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getUsernameOrEmail(), req.getPassword()));
+
+        // Set the authentication object in SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // Load UserDetails using UserDetailsService
         UserDetails userDetails = userDetailsService.loadUserByUsername(req.getUsernameOrEmail());
+
+        // Generate JWT token
         String token = jwtTokenProvider.generateToken(authentication);
 
+        // Map UserDetails to UserDto using ModelMapper
         UserDto response = mapper.map(userDetails, UserDto.class);
+
+        // Build and return LoginJWTResponse
         return LoginJWTResponse.builder()
                 .jwtToken(token)
                 .user(response)
@@ -78,26 +89,44 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Email already exists.");
         }
 
-        // Map the request to a new User object
+        // Generate a unique userId using UUID
+        String userId = UUID.randomUUID().toString();
+
+        // Map the RegistrationRequest to a new User object using ModelMapper
+        User user = mapper.map(req, User.class);
+
+        // Set the generated userId
+        user.setUserId(userId);
+
+       /* // Map the request to a new User object
         User user = User.builder()
                 .name(req.getName())
                 .email(req.getEmail())
                 .username(req.getUsername())
                 .password(passwordEncoder.encode(req.getPassword()))
-                .build();
+                .build();*/
+
+        // Encode the password before setting it in the User object
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+
         // Fetch the user role from the repository
         Role userRole = roleRepository.findByRoleName("ROLE_NORMAL")
                 .orElseThrow(() -> new AuthUserApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Default role not found."));
+
         // Initialize the roles field if it's null
         if (user.getRoles() == null) {
             user.setRoles(new HashSet<>());
         }
+
         // Add the user role to the roles set
         user.getRoles().add(userRole);
+
         // Save the user to the database
         userRepository.save(user);
+
         return "User registered successfully.";
     }
+
 
     /**
      * Registers a new worker using the provided registration request.
@@ -109,17 +138,24 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public RegistrationResponse registerWorker(RegistrationRequest req) {
-        // add check for username exists in database
+        // Add check for username exists in database
         if (userRepository.existsByUsername(req.getUsername())) {
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Username is already exists!.");
         }
-        // add check for email exists in database
+        // Add check for email exists in database
         if (userRepository.existsByEmail(req.getEmail())) {
             throw new AuthUserApiException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
         }
+
+        // Get the current user details
         UserDto currentUser = userService.getCurrentUser();
+
+        // Map the current user details to a User entity
         User user = mapper.map(currentUser, User.class);
+
+        // Create a new Worker entity from the registration request
         Worker worker = Worker.builder()
+                .workerId(UUID.randomUUID().toString()) // Set workerId using UUID
                 .name(req.getName())
                 .email(req.getEmail())
                 .username(req.getUsername())
@@ -128,15 +164,28 @@ public class AuthServiceImpl implements AuthService {
         // Fetch the worker role from the repository
         Role workerRole = roleRepository.findByRoleName("ROLE_WORKER")
                 .orElseThrow(() -> new AuthUserApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Worker role not found."));
+
         // Initialize the roles field if it's null
         if (worker.getRoles() == null) {
             worker.setRoles(new HashSet<>());
         }
+
         // Add the worker role to the roles set
         worker.getRoles().add(workerRole);
+
+        // Set the user for the worker
         worker.setUser(user);
-        workerRepository.save(worker);
-        return mapper.map(worker, RegistrationResponse.class);
+
+        // Save the worker to the repository
+        Worker savedWorker = workerRepository.save(worker);
+
+        // Create a RegistrationResponse from the saved worker entity
+        RegistrationResponse response = mapper.map(savedWorker, RegistrationResponse.class);
+
+        // Set the userId in the response
+        response.setUserId(savedWorker.getUser().getUserId());
+
+        return response;
     }
 
     /**
