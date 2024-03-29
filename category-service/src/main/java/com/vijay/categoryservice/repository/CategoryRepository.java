@@ -1,7 +1,6 @@
 package com.vijay.categoryservice.repository;
 
 import com.vijay.categoryservice.entity.Category;
-import com.vijay.commonservice.product.model.CategoryResponse;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

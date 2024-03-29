@@ -1,7 +1,7 @@
 package com.vijay.categoryservice.service;
 
-import com.vijay.commonservice.product.model.CategoryRequest;
-import com.vijay.commonservice.product.model.CategoryResponse;
+import com.vijay.commonservice.category.model.CategoryRequest;
+import com.vijay.commonservice.category.model.CategoryResponse;
 
 import java.util.List;
 

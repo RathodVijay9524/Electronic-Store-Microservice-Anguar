@@ -1,5 +1,6 @@
-package com.vijay.commonservice.model;
+package com.vijay.productservice.entity;
 
+import com.vijay.commonservice.model.CategoryDto;
 import lombok.*;
 
 import java.util.Date;
@@ -8,8 +9,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
-public class ProductDto {
+public class Product {
     private String productId;
     private String title;
     private String description;

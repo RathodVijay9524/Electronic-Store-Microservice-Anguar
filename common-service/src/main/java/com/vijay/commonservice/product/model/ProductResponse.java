@@ -1,15 +1,19 @@
-package com.vijay.commonservice.model;
+package com.vijay.commonservice.product.model;
 
-import lombok.*;
+import com.vijay.commonservice.model.CategoryDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
-public class ProductDto {
+public class ProductResponse {
     private String productId;
     private String title;
     private String description;

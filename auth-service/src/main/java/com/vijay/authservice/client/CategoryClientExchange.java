@@ -1,6 +1,6 @@
 package com.vijay.authservice.client;
 
-import com.vijay.commonservice.product.model.CategoryResponse;;
+import com.vijay.commonservice.category.model.CategoryResponse;;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
