@@ -1,8 +1,9 @@
-package com.vijay.commonservice.model;
+package com.vijay.commonservice.user.response;
 
-
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,28 +12,14 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UserDto {
+public class RegistrationResponse {
 
+    private String workerId;
     private String userId;
-
-
     private String name;
-
-
+    private String username;
     private String email;
-
-
     private String password;
-
-
-    private String gender;
-
-
-    private String about;
-
-
-    private String imageName;
 
     private Set<RoleDto> roles = new HashSet<>();
 }

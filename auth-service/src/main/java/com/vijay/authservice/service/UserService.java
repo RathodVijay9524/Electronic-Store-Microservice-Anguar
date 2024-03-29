@@ -1,6 +1,6 @@
 package com.vijay.authservice.service;
 
-import com.vijay.authservice.model.UserDto;
+import com.vijay.commonservice.user.response.UserDto;
 
 import java.util.List;
 /**

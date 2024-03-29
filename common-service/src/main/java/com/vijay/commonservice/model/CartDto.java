@@ -1,5 +1,6 @@
 package com.vijay.commonservice.model;
 
+import com.vijay.commonservice.user.response.UserDto;
 import lombok.*;
 
 import java.util.ArrayList;

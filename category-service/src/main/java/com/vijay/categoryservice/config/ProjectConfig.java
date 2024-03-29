@@ -1,4 +1,4 @@
-package com.vijay.commonservice.config;
+package com.vijay.categoryservice.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

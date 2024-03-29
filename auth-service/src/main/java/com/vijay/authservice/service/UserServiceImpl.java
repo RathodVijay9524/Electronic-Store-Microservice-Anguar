@@ -1,9 +1,9 @@
 package com.vijay.authservice.service;
 
 import com.vijay.authservice.entity.User;
-import com.vijay.authservice.exception.AuthUserApiException;
-import com.vijay.authservice.exception.ResourceNotFoundException;
-import com.vijay.authservice.model.UserDto;
+import com.vijay.commonservice.user.exception.AuthUserApiException;
+import com.vijay.commonservice.user.exception.ResourceNotFoundException;
+import com.vijay.commonservice.user.response.UserDto;
 import com.vijay.authservice.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
