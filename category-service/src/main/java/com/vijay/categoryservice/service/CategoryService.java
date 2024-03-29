@@ -21,5 +21,7 @@ public interface CategoryService {
 
     // Delete operation - Delete a category by its categoryId
     void deleteCategory(String categoryId);
+
+    List<CategoryResponse> getCategoryByUserId(String userId);
 }
 

@@ -9,8 +9,8 @@ import com.vijay.commonservice.user.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -75,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
         // Map each Category entity to CategoryResponse and collect into a list
         return categories.stream()
                 .map(category -> modelMapper.map(category, CategoryResponse.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -119,5 +119,20 @@ public class CategoryServiceImpl implements CategoryService {
         }
         // Delete the category
         categoryRepository.delete(category);
+    }
+
+    @Override
+    public List<CategoryResponse> getCategoryByUserId(String userId) {
+        // Retrieve categories by user ID from the repository
+        List<Category> categories = categoryRepository.findByUserId(userId);
+
+        // Map Category objects to CategoryResponse objects using ModelMapper and Java 8 streams
+        List<CategoryResponse> categoryResponses = categories.stream()
+                // Map each Category object to a CategoryResponse object
+                .map(category -> modelMapper.map(category, CategoryResponse.class))
+                // Collect the mapped objects into a list
+                .toList();
+        // Return the list of CategoryResponse objects
+        return categoryResponses;
     }
 }

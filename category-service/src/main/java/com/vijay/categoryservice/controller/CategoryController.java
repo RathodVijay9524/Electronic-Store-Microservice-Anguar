@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
@@ -76,5 +76,13 @@ public class CategoryController {
         categoryService.deleteCategory(categoryId);
         logger.info("Category deleted with ID: {}", categoryId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CategoryResponse>> getCategoryByUserId(@PathVariable String userId) {
+        logger.info("Retrieving categories for user with ID: {}", userId);
+        List<CategoryResponse> categories = categoryService.getCategoryByUserId(userId);
+        logger.info("Categories retrieved successfully for user with ID: {}", userId);
+        return ResponseEntity.ok(categories);
     }
 }
