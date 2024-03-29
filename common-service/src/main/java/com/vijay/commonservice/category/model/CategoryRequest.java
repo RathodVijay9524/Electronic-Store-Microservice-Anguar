@@ -1,4 +1,4 @@
-package com.vijay.commonservice.product.model;
+package com.vijay.commonservice.category.model;
 
 public class CategoryRequest {
     private String title;

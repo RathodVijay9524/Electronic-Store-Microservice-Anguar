@@ -1,7 +1,7 @@
 package com.vijay.categoryservice.controller;
 
-import com.vijay.commonservice.product.model.CategoryRequest;
-import com.vijay.commonservice.product.model.CategoryResponse;
+import com.vijay.commonservice.category.model.CategoryRequest;
+import com.vijay.commonservice.category.model.CategoryResponse;
 import com.vijay.categoryservice.service.CategoryService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

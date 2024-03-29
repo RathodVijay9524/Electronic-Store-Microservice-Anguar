@@ -1,8 +1,8 @@
 package com.vijay.categoryservice.service;
 
 import com.vijay.categoryservice.entity.Category;
-import com.vijay.commonservice.product.model.CategoryRequest;
-import com.vijay.commonservice.product.model.CategoryResponse;
+import com.vijay.commonservice.category.model.CategoryRequest;
+import com.vijay.commonservice.category.model.CategoryResponse;
 import com.vijay.categoryservice.repository.CategoryRepository;
 
 import com.vijay.commonservice.user.exception.ResourceNotFoundException;
