@@ -1,6 +1,7 @@
 package com.vijay.commonservice.model;
 
 
+import com.vijay.commonservice.user.response.UserDto;
 import lombok.*;
 
 
@@ -29,7 +30,7 @@ public class OrderDto {
     private List<OrderItemDto> orderItems = new ArrayList<>();
 
     //add this to get user information with order
-    private  UserDto user;
+    private UserDto user;
 
 
 }

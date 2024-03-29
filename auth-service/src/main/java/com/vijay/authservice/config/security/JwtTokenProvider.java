@@ -1,6 +1,6 @@
 package com.vijay.authservice.config.security;
 
-import com.vijay.authservice.exception.AuthUserApiException;
+import com.vijay.commonservice.user.exception.AuthUserApiException;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

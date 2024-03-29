@@ -1,4 +1,4 @@
-package com.vijay.authservice.exception;
+package com.vijay.commonservice.user.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

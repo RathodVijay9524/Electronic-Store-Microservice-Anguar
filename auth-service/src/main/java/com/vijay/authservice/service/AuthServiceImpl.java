@@ -3,15 +3,16 @@ import com.vijay.authservice.config.security.JwtTokenProvider;
 import com.vijay.authservice.entity.Role;
 import com.vijay.authservice.entity.User;
 import com.vijay.authservice.entity.Worker;
-import com.vijay.authservice.exception.AuthUserApiException;
-import com.vijay.authservice.model.*;
+import com.vijay.commonservice.user.exception.AuthUserApiException;
 import com.vijay.authservice.repository.RoleRepo;
 import com.vijay.authservice.repository.UserRepository;
 import com.vijay.authservice.repository.WorkerRepository;
+import com.vijay.commonservice.user.request.LoginRequest;
+import com.vijay.commonservice.user.request.RegistrationRequest;
+import com.vijay.commonservice.user.response.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -154,7 +155,7 @@ public class AuthServiceImpl implements AuthService {
         User user = mapper.map(currentUser, User.class);
 
         // Create a new Worker entity from the registration request
-        Worker worker = Worker.builder()
+        Worker worker = Worker.builder()                     // we can map this also using mapper
                 .workerId(UUID.randomUUID().toString()) // Set workerId using UUID
                 .name(req.getName())
                 .email(req.getEmail())

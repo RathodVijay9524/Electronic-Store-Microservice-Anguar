@@ -1,4 +1,4 @@
-package com.vijay.authservice.exception;
+package com.vijay.commonservice.user.exception;
 
 public class BadApiRequestException extends RuntimeException {
 

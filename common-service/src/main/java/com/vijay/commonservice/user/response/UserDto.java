@@ -1,4 +1,4 @@
-package com.vijay.authservice.model;
+package com.vijay.commonservice.user.response;
 
 
 import lombok.*;

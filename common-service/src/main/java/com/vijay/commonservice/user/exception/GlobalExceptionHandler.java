@@ -1,4 +1,4 @@
-package com.vijay.authservice.exception;
+package com.vijay.commonservice.user.exception;
 
 
 import lombok.extern.log4j.Log4j2;
