@@ -1,4 +1,4 @@
-package com.vijay.authservice.client;
+package com.vijay.orderservice.client;
 
 import com.vijay.commonservice.product.model.ProductResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,6 +11,13 @@ import java.util.List;
 @FeignClient(name = "PRODUCT-SERVICE")
 public interface ProductFeignClient {
 
+    @GetMapping("/api/products/{productId}")
+    ProductResponse getProductByProductId(@PathVariable String productId);
+
     @GetMapping("/api/products/user/{userId}")
     List<ProductResponse> getProductsByUserId(@PathVariable String userId);
+
+    @GetMapping("/api/products/category/{categoryId}")
+    List<ProductResponse> getProductsByCategoryId(@PathVariable String categoryId);
+
 }
