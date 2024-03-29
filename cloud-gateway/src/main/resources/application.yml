@@ -8,19 +8,34 @@ spring:
     gateway:
       routes:
 
-        - id: POST-SERVICE
-          uri: lb://POST-SERVICE
+        - id: PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE
           predicates:
-            - Path=/posts/**
+            - Path=/api/products/**
           filters:
             - AuthenticationFilter
 
-        - id: COMMENT-SERVICE
-          uri: lb://COMMENT-SERVICE
+        - id: CATEGORY-SERVICE
+          uri: lb://CATEGORY-SERVICE
           predicates:
-            - Path=/comments/**
+            - Path=/api/categories/**
           filters:
             - AuthenticationFilter
+
+        - id: ORDER-SERVICE
+          uri: lb://CATEGORY-SERVICE
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - AuthenticationFilter
+
+        - id: PAYMENT-SERVICE
+          uri: lb://CATEGORY-SERVICE
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - AuthenticationFilter
+
 
         - id: AUTH-SERVICE
           uri: lb://AUTH-SERVICE

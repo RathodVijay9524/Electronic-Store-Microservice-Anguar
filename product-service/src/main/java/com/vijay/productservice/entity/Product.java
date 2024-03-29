@@ -2,6 +2,8 @@ package com.vijay.productservice.entity;
 
 import com.vijay.commonservice.model.CategoryDto;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
@@ -9,7 +11,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
+@Document("product_table")
 public class Product {
+    @Id
     private String productId;
     private String title;
     private String description;
@@ -20,5 +24,6 @@ public class Product {
     private boolean live;
     private boolean stock;
     private String productImageName;
-    private CategoryDto category;
+    private String categoryId;
+    private String userId;
 }

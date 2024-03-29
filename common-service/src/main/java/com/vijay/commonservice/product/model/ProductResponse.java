@@ -24,5 +24,6 @@ public class ProductResponse {
     private boolean live;
     private boolean stock;
     private String productImageName;
-    private CategoryDto category;
+    private String category;
+    private String userId;
 }
