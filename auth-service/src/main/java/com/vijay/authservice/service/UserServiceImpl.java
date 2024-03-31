@@ -1,6 +1,10 @@
 package com.vijay.authservice.service;
 
+import com.vijay.authservice.client.CategoryServiceFeignClient;
+import com.vijay.authservice.client.ProductFeignClient;
 import com.vijay.authservice.entity.User;
+import com.vijay.commonservice.category.model.CategoryResponse;
+import com.vijay.commonservice.product.model.ProductResponse;
 import com.vijay.commonservice.user.exception.AuthUserApiException;
 import com.vijay.commonservice.user.exception.ResourceNotFoundException;
 import com.vijay.commonservice.user.response.UserDto;
@@ -27,6 +31,7 @@ import java.util.stream.Collectors;
 /**
  * Service implementation for handling user-related operations.
  */
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -35,6 +40,48 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper mapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CategoryServiceFeignClient categoryServiceFeignClient;
+    private final ProductFeignClient productFeignClient;
+
+    /**
+     * Retrieves user categories by user ID.
+     *
+     * @param userId The ID of the user.
+     * @return UserDto representing the user with categories.
+     * @throws ResourceNotFoundException if the user with the specified ID is not found.
+     */
+    @Override
+    public UserDto getUserByCategory(String userId) {
+        // Retrieve user by ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+        // Retrieve categories by user ID from Feign client
+        List<CategoryResponse> categoryByUserId = categoryServiceFeignClient.getCategoryByUserId(user.getUserId());
+        // Set categories to user
+        user.setCategories(categoryByUserId);
+        // Map user to UserDto and return
+        return mapper.map(user, UserDto.class);
+    }
+
+    /**
+     * Retrieves user products by user ID.
+     *
+     * @param userId The ID of the user.
+     * @return UserDto representing the user with products.
+     * @throws ResourceNotFoundException if the user with the specified ID is not found.
+     */
+    @Override
+    public UserDto getUserProductByUserId(String userId) {
+        // Retrieve user by ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+        // Retrieve products by user ID from Feign client
+        List<ProductResponse> productsByUserId = productFeignClient.getProductsByUserId(user.getUserId());
+        // Set products to user
+        user.setProducts(productsByUserId);
+        // Map user to UserDto and return
+        return mapper.map(user, UserDto.class);
+    }
 
     /**
      * Retrieves the details of the currently authenticated user.
@@ -108,8 +155,10 @@ public class UserServiceImpl implements UserService {
         // Map the updated user to a UserDto and return it
         return mapper.map(updatedSavedUser, UserDto.class);
     }
+
     /**
      * Deletes a user by their ID.
+     *
      * @param userId ID of the user to delete.
      * @throws ResourceNotFoundException if the user with the specified ID is not found.
      */
@@ -119,8 +168,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
         userRepository.delete(user);
     }
+
     /**
      * Retrieves a user by their email address.
+     *
      * @param email Email address of the user to retrieve.
      * @return UserDto representing the user with the specified email address.
      * @throws AuthUserApiException if the user with the specified email address is not found.
@@ -146,6 +197,14 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> searchUser(String keywords) {
         List<User> users = userRepository.findByNameContaining(keywords);
         return users.stream()
+                .map(user -> mapper.map(user, UserDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        List<User> all = userRepository.findAll();
+        return all.stream()
                 .map(user -> mapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
     }

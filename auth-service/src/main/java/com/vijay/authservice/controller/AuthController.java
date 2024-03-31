@@ -33,7 +33,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping(value = {"/login", "/signin"})
+    @PostMapping(value = {"/login", "/signing"})
     public ResponseEntity<LoginJWTResponse> login(@RequestBody LoginRequest request) {
         logger.info("Attempting login for user: {}", request.getUsernameOrEmail());
         LoginJWTResponse login = authService.login(request);

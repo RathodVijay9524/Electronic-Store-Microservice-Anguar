@@ -13,6 +13,6 @@ import java.util.List;
 public interface CategoryServiceFeignClient {
 
     @GetMapping("/api/categories/{categoryId}")
-    public ResponseEntity<CategoryResponse> getCategoryByCategoryId(@PathVariable String categoryId);
+    CategoryResponse getCategoryByCategoryId(@PathVariable String categoryId);
 
 }

@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @SpringBootApplication
 @EnableDiscoveryClient
 @AllArgsConstructor
+@EnableFeignClients
 public class AuthServiceApplication {
 
     private final PasswordEncoder passwordEncoder;

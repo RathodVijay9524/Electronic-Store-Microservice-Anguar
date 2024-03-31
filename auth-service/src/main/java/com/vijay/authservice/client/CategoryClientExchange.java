@@ -8,6 +8,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 import java.util.List;
 @HttpExchange
 public interface CategoryClientExchange {
+
     @GetExchange("/api/categories/user/{userId}")
     List<CategoryResponse> getCategoryByUserId(@PathVariable String userId);
 }

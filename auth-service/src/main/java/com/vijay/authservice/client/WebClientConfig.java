@@ -1,5 +1,6 @@
 package com.vijay.authservice.client;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
@@ -9,10 +10,12 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
+@AllArgsConstructor
 public class WebClientConfig {
 
-    @Autowired
-    private LoadBalancedExchangeFilterFunction filterFunction;
+
+    private final LoadBalancedExchangeFilterFunction filterFunction;
+
     @Bean
     public WebClient categoryWebClient() {
         return WebClient.builder().baseUrl("http://CATEGORY-SERVICE")
@@ -21,7 +24,8 @@ public class WebClientConfig {
     }
     @Bean
     public CategoryClientExchange inventoryClient() {
-        return HttpServiceProxyFactory.builder(WebClientAdapter.forClient(categoryWebClient())).build()
+        return HttpServiceProxyFactory.builderFor(WebClientAdapter.create(categoryWebClient())).build()
                 .createClient(CategoryClientExchange.class);
     }
+
 }

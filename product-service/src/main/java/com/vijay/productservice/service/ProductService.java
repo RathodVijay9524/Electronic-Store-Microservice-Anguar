@@ -1,11 +1,14 @@
 package com.vijay.productservice.service;
 
-import com.vijay.productservice.model.ProductRequest;
-import com.vijay.productservice.model.ProductResponse;
+import com.vijay.commonservice.product.model.ProductRequest;
+import com.vijay.commonservice.product.model.ProductResponse;
 
 import java.util.List;
 
 public interface ProductService {
+
+
+    void reduceQuantity(String productId, long quantity);
     /**
      * Creates a new product.
      *
@@ -60,5 +63,7 @@ public interface ProductService {
      * @return A list of ProductResponse objects associated with the user.
      */
     List<ProductResponse> findProductsByUser(String userId);
+
+
 
 }

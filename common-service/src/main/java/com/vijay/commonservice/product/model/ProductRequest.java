@@ -1,5 +1,6 @@
 package com.vijay.commonservice.product.model;
 
+import com.vijay.commonservice.category.model.CategoryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Date;
     @Setter
     public class ProductRequest {
 
+        private String productId;
         private String title;
         private String description;
         private int price;
@@ -23,8 +25,11 @@ import java.util.Date;
         private Date addedDate;
         private boolean live;
         private boolean stock;
-        private String productImageName;
         private String categoryId;
         private String userId;
+        private String productImageName;
+        private CategoryResponse category;
+
+
     }
 

@@ -3,6 +3,7 @@ package com.vijay.categoryservice.controller;
 import com.vijay.commonservice.category.model.CategoryRequest;
 import com.vijay.commonservice.category.model.CategoryResponse;
 import com.vijay.categoryservice.service.CategoryService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,12 +19,13 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/categories")
+@AllArgsConstructor
 public class CategoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
-    @Autowired
-    private CategoryService categoryService;
+
+    private final CategoryService categoryService;
 
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest categoryRequest) {
@@ -46,6 +48,20 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("/products/{categoryId}")
+    public ResponseEntity<CategoryResponse> getCategoryByIdForProduct(@PathVariable String categoryId) {
+        logger.info("Recived request to retrieve category by ID: {}", categoryId);
+        CategoryResponse category = categoryService.getCategoryByIdForProductList(categoryId);
+        if (category != null) {
+            logger.info("Catgory found: {}", category);
+            return ResponseEntity.ok(category);
+        } else {
+            logger.warn("Category not found wit ID: {}", categoryId);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAllCategories() {
         logger.info("Received request to retrieve all categories");
@@ -65,7 +81,7 @@ public class CategoryController {
             logger.info("Category updated: {}", updatedCategory);
             return ResponseEntity.ok(updatedCategory);
         } else {
-            logger.warn("Category not found with ID: {}", categoryId);
+            logger.warn("Categors not found with ID: {}", categoryId);
             return ResponseEntity.notFound().build();
         }
     }
