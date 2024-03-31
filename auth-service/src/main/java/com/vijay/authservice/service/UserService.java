@@ -7,7 +7,21 @@ import java.util.List;
  * Service interface for user-related operations.
  */
 public interface UserService {
+    /**
+     * Retrieves details of a user by their ID and their associated categories.
+     *
+     * @param userId ID of the user.
+     * @return UserDto representing the user with associated categories.
+     */
+    UserDto getUserByCategory(String userId);
 
+    /**
+     * Retrieves details of a user by their ID and their associated products.
+     *
+     * @param userId ID of the user.
+     * @return UserDto representing the user with associated products.
+     */
+    UserDto getUserProductByUserId(String userId);
     /**
      * Retrieves details of the current authenticated user.
      *
@@ -54,4 +68,6 @@ public interface UserService {
      * @return List of UserDto objects matching the search criteria.
      */
     List<UserDto> searchUser(String keywords);
+
+    List<UserDto> getAllUsers();
 }

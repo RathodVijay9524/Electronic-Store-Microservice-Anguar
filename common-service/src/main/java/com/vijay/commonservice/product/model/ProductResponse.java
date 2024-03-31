@@ -1,10 +1,10 @@
 package com.vijay.commonservice.product.model;
 
-import com.vijay.commonservice.model.CategoryDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.vijay.commonservice.category.model.CategoryResponse;
+import com.vijay.commonservice.user.request.UserRequest;
+import com.vijay.commonservice.user.response.UserDto;
+import com.vijay.commonservice.user.response.UserResponse;
+import lombok.*;
 
 import java.util.Date;
 
@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class ProductResponse {
     private String productId;
     private String title;
@@ -23,7 +24,12 @@ public class ProductResponse {
     private Date addedDate;
     private boolean live;
     private boolean stock;
-    private String productImageName;
-    private String category;
+    private String categoryId;
     private String userId;
+    private UserDto user;
+    private String productImageName;
+    private CategoryResponse category;
+
+
+
 }

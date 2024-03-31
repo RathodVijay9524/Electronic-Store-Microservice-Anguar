@@ -1,5 +1,7 @@
 package com.vijay.authservice.entity;
 
+import com.vijay.commonservice.category.model.CategoryResponse;
+import com.vijay.commonservice.product.model.ProductResponse;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
@@ -44,4 +46,9 @@ public class User  {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Worker> workers = new ArrayList<>();
+
+    @Transient
+    private List<CategoryResponse> categories;
+    @Transient
+    private List<ProductResponse> products;
 }

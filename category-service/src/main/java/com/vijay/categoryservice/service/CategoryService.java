@@ -24,6 +24,11 @@ public interface CategoryService {
 
     List<CategoryResponse> getCategoryByUserId(String userId);
 
+    CategoryResponse getCategoryByIdForProductList(String categoryId);
+
+
+
+
 
 }
 

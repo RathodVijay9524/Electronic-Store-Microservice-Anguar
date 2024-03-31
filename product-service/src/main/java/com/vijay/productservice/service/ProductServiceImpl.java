@@ -1,134 +1,177 @@
 package com.vijay.productservice.service;
 
-import com.vijay.commonservice.user.exception.ResourceNotFoundException;
+import com.vijay.commonservice.category.model.CategoryResponse;
+import com.vijay.commonservice.product.model.ProductRequest;
+import com.vijay.commonservice.product.model.ProductResponse;
+
+import com.vijay.commonservice.user.response.UserDto;
+import com.vijay.commonservice.user.response.UserResponse;
+import com.vijay.productservice.client.CategoryServiceFeignClient;
+
+import com.vijay.productservice.client.UserFeignClient;
 import com.vijay.productservice.entity.Product;
-import com.vijay.productservice.model.ProductRequest;
-import com.vijay.productservice.model.ProductResponse;
 import com.vijay.productservice.repository.ProductRepository;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Implementation of the ProductService interface for handling product-related operations.
- */
 @Service
+@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    // ProductRepository for accessing product data
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    // Feign client for accessing category service
+    private final CategoryServiceFeignClient categoryServiceFeignClient;
+    private final UserFeignClient userFeignClient;
 
-
+    // Method to reduce the quantity of a product
     @Override
-    public List<ProductResponse> findProductsByCategoryId(String categoryId) {
-        // Retrieve products associated with the given category ID from the repository
-        List<Product> products = productRepository.findByCategoryId(categoryId);
+    public void reduceQuantity(String productId, long quantity) {
+        // Retrieve product by ID from the repository
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Map each Product entity to ProductResponse using ModelMapper and collect them into a list
-        return products.stream()
-                .map(product -> modelMapper.map(product, ProductResponse.class))
-                .collect(Collectors.toList());
+        // Check if available quantity is sufficient
+        int currentQuantity = product.getQuantity();
+        if (currentQuantity < quantity) {
+            throw new RuntimeException("Insufficient quantity");
+        }
+
+        // Reduce the quantity and save the updated product
+        product.setQuantity((int) (currentQuantity - quantity));
+        productRepository.save(product);
     }
 
-    @Override
-    public List<ProductResponse> findProductsByUser(String userId) {
-        // Retrieve products associated with the given user ID from the repository
-        List<Product> products = productRepository.findByUserId(userId);
-
-        // Map each Product entity to ProductResponse using ModelMapper and collect them into a list
-        return products.stream()
-                .map(product -> modelMapper.map(product, ProductResponse.class))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Creates a new product.
-     *
-     * @param productRequest The request containing details of the product to be created.
-     * @return The response containing details of the created product.
-     */
+    // Method to create a new product
     @Override
     public ProductResponse createProduct(ProductRequest productRequest) {
-        // Map the ProductRequest to Product entity and save it to the repository
-        Product product = modelMapper.map(productRequest, Product.class);
+        // Create a new product entity using the request data
+        Product product = Product.builder()
+                .title(productRequest.getTitle())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .discountedPrice(productRequest.getDiscountedPrice())
+                .quantity(productRequest.getQuantity())
+                .addedDate(new Date())
+                .live(productRequest.isLive())
+                .stock(productRequest.isStock())
+                .categoryId(productRequest.getCategoryId())
+                .userId(productRequest.getUserId())
+                .productImageName(productRequest.getProductImageName())
+                .build();
+
+        // Save the newly created product and return its response
         Product savedProduct = productRepository.save(product);
-        // Map the saved Product entity back to ProductResponse and return it
-        return modelMapper.map(savedProduct, ProductResponse.class);
+        return mapToResponse(savedProduct);
     }
 
-    /**
-     * Retrieves a product by its ID.
-     *
-     * @param productId The ID of the product to retrieve.
-     * @return The response containing details of the retrieved product.
-     * @throws ResourceNotFoundException if the product with the specified ID is not found.
-     */
+    // Method to retrieve product by ID
     @Override
     public ProductResponse getProductById(String productId) {
-        // Retrieve the product by ID from the repository
+        // Retrieve product by ID from the repository
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-        // Map the retrieved Product entity to ProductResponse and return it
-        return modelMapper.map(product, ProductResponse.class);
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Retrieve category information for the product
+        CategoryResponse category= categoryServiceFeignClient.getCategoryByCategoryId(product.getCategoryId());
+        // Set the category for the product and return its response
+        product.setCategory(category);
+        return mapToResponse(product);
     }
 
-    /**
-     * Retrieves all products.
-     *
-     * @return A list of responses containing details of all products.
-     */
+    // Method to retrieve all products along with user details
     @Override
     public List<ProductResponse> getAllProducts() {
         // Retrieve all products from the repository
         List<Product> products = productRepository.findAll();
-        // Map each Product entity to ProductResponse and collect them into a list
+    /*    products.forEach(product -> {
+            UserDto user= userFeignClient.getUser(product.getUserId());
+            product.setUser(user);
+        });*/
+        // Map the products to response objects and return
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductResponse.class))
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Updates an existing product.
-     *
-     * @param productId      The ID of the product to update.
-     * @param updatedProduct The request containing updated details of the product.
-     * @return The response containing details of the updated product.
-     * @throws ResourceNotFoundException if the product with the specified ID is not found.
-     */
+    // Method to update an existing product
     @Override
     public ProductResponse updateProduct(String productId, ProductRequest updatedProduct) {
-        // Retrieve the existing product from the repository
-        Product existingProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-        // Map the updated details from ProductRequest to the existing Product entity
-        modelMapper.map(updatedProduct, existingProduct);
-        existingProduct.setProductId(productId);
-        // Save the updated product to the repository
-        Product savedProduct = productRepository.save(existingProduct);
-        // Map the saved Product entity back to ProductResponse and return it
-        return modelMapper.map(savedProduct, ProductResponse.class);
+        // Retrieve product by ID from the repository
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Retrieve category information for the updated product
+        CategoryResponse category= categoryServiceFeignClient.getCategoryByCategoryId(updatedProduct.getCategoryId());
+
+        // Update product fields with new values from the request
+        product.setTitle(updatedProduct.getTitle());
+        product.setDescription(updatedProduct.getDescription());
+        product.setPrice(updatedProduct.getPrice());
+        product.setDiscountedPrice(updatedProduct.getDiscountedPrice());
+        product.setQuantity(updatedProduct.getQuantity());
+        product.setAddedDate(updatedProduct.getAddedDate());
+        product.setLive(updatedProduct.isLive());
+        product.setStock(updatedProduct.isStock());
+        product.setProductImageName(updatedProduct.getProductImageName());
+        product.setCategory(category);
+
+        // Save the updated product and return its response
+        Product updatedProductEntity = productRepository.save(product);
+        return mapToResponse(updatedProductEntity);
     }
 
-    /**
-     * Deletes a product by its ID.
-     *
-     * @param productId The ID of the product to delete.
-     * @throws ResourceNotFoundException if the product with the specified ID is not found.
-     */
+    // Method to delete a product by ID
     @Override
     public void deleteProduct(String productId) {
-        // Retrieve the product by ID from the repository
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-        // Delete the product from the repository
-        productRepository.delete(product);
+        // Delete product by ID from the repository
+        productRepository.deleteById(productId);
     }
 
+    // Method to find products by category ID
+    @Override
+    public List<ProductResponse> findProductsByCategoryId(String categoryId) {
+        // Retrieve products by category ID from the repository and map them to responses
+        List<Product> products = productRepository.findByCategoryId(categoryId);
+        return products.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
 
+    // Method to find products by user ID
+    @Override
+    public List<ProductResponse> findProductsByUser(String userId) {
+        // Retrieve products by user ID from the repository and map them to responses
+        List<Product> products = productRepository.findByUserId(userId);
+        return products.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Method to map a product entity to its response representation
+    private ProductResponse mapToResponse(Product product) {
+        return ProductResponse.builder()
+                .productId(String.valueOf(product.getProductId()))
+                .title(product.getTitle())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .discountedPrice(product.getDiscountedPrice())
+                .quantity(product.getQuantity())
+                .addedDate(product.getAddedDate())
+                .live(product.isLive())
+                .stock(product.isStock())
+                .categoryId(product.getCategoryId())
+                .userId(product.getUserId())
+                .category(product.getCategory())
+                .user(product.getUser())
+                .productImageName(product.getProductImageName())
+                .build();
+    }
 }
-

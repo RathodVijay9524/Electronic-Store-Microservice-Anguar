@@ -19,7 +19,5 @@ public class OrderItemDto {
 
     private int totalPrice;
 
-    private ProductDto product;
-
-
+    private String productId;
 }
