@@ -13,3 +13,6 @@ spring:
       database: store_micro
   application:
     name: CART-ITEM-SERVICE
+
+
+

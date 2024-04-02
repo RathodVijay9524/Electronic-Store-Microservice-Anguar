@@ -119,6 +119,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserById(String userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+
         return mapper.map(user, UserDto.class);
     }
 
