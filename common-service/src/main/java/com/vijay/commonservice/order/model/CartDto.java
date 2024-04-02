@@ -1,5 +1,6 @@
 package com.vijay.commonservice.order.model;
 
+import com.vijay.commonservice.user.response.UserDto;
 import lombok.*;
 
 import java.lang.annotation.Documented;
@@ -15,7 +16,10 @@ import java.util.List;
 public class CartDto {
 
     private String cartId;
-    private Date createdAt;
     private String userId;
+    private Date createdAt;
+    //mapping cart-items
     private List<CartItemDto> items = new ArrayList<>();
+    private UserDto user;
+
 }

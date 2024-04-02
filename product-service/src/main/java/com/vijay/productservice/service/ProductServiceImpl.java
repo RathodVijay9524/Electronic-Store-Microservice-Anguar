@@ -80,9 +80,9 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         // Retrieve category information for the product
-        CategoryResponse category= categoryServiceFeignClient.getCategoryByCategoryId(product.getCategoryId());
+      /*  CategoryResponse category= categoryServiceFeignClient.getCategoryByCategoryId(product.getCategoryId());
         // Set the category for the product and return its response
-        product.setCategory(category);
+        product.setCategory(category);*/
         return mapToResponse(product);
     }
 

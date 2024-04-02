@@ -36,6 +36,24 @@ spring:
           filters:
             - AuthenticationFilter
 
+        - id: CART-SERVICE
+          uri: lb://CART-SERVICE
+          predicates:
+            - Path=/api/carts/**
+          filters:
+            - AuthenticationFilter
+
+        - id: CART-ITEM-SERVICE
+          uri: lb://CART-ITEM-SERVICE
+          predicates:
+            - Path=/api/cart-item/**
+          filters:
+            - AuthenticationFilter
+
+
+
+
+
         - id: AUTH-SERVICE
           uri: lb://AUTH-SERVICE
           predicates:

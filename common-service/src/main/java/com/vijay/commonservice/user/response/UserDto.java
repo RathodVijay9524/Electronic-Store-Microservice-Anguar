@@ -23,8 +23,8 @@ public class UserDto {
     private String gender;
     private String about;
     private String imageName;
-    private Set<RoleDto> roles = new HashSet<>();
 
+    private Set<RoleDto> roles = new HashSet<>();
     private List<CategoryResponse> categories;
     private List<ProductResponse> products;
 }
