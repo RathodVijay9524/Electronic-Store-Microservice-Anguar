@@ -43,7 +43,9 @@ public class Order {
 
     private Date deliveredDate;
 
+    private List<OrderItemDto> orderItems = new ArrayList<>();
+
     private UserDto user;
 
-    private List<OrderItemDto> orderItems = new ArrayList<>();
+
 }

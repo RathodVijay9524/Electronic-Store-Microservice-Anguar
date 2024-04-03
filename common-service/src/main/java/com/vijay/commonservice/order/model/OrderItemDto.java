@@ -1,6 +1,7 @@
 package com.vijay.commonservice.order.model;
 
 
+import com.vijay.commonservice.product.model.ProductResponse;
 import lombok.*;
 
 
@@ -9,16 +10,18 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @ToString
 public class OrderItemDto {
 
 
-    private int orderItemId;
-
-    private int quantity;
-
-    private int totalPrice;
-
+    private String orderItemId;
+    private String userId;
     private String productId;
+    private int quantity;
+    private int totalPrice;
+    private ProductResponse product;
+    private OrderDto order;
+
 
 }

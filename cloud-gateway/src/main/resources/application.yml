@@ -23,9 +23,16 @@ spring:
             - AuthenticationFilter
 
         - id: ORDER-SERVICE
-          uri: lb://CATEGORY-SERVICE
+          uri: lb://ORDER-SERVICE
           predicates:
             - Path=/api/orders/**
+          filters:
+            - AuthenticationFilter
+
+        - id: ORDER-ITEM-SERVICE
+          uri: lb://ORDER-ITEM-SERVICE
+          predicates:
+            - Path=/api/order-items/**
           filters:
             - AuthenticationFilter
 
