@@ -1,6 +1,5 @@
 package com.vijay.commonservice.order.model;
 
-import com.vijay.commonservice.model.OrderItemDto;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -17,6 +16,8 @@ import java.util.List;
 public class OrderResponse {
 
     private String orderId;
+    private String productId;
+    private String userId;
     private String orderStatus="PENDING";
     private String paymentStatus="NOTPAID";
     private int orderAmount;
@@ -29,8 +30,7 @@ public class OrderResponse {
     private List<OrderItemDto> orderItems = new ArrayList<>();
 
     //add this to get user information with order
-    private String userId;
-    private String productId;
+
 
 
 }

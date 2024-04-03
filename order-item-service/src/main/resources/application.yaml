@@ -1,5 +1,5 @@
 server:
-  port: 9094
+  port: 9096
 
 eureka:
   client:
@@ -12,7 +12,7 @@ spring:
       uri: mongodb://localhost:27017
       database: store_micro
   application:
-    name: ORDER-SERVICE
+    name: ORDER-ITEM-SERVICE
 
 
 

@@ -1,4 +1,4 @@
-package com.vijay.commonservice.model;
+package com.vijay.commonservice.order.model;
 
 
 import lombok.*;
@@ -20,4 +20,5 @@ public class OrderItemDto {
     private int totalPrice;
 
     private String productId;
+
 }

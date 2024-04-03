@@ -1,4 +1,4 @@
-package com.vijay.commonservice.request;
+package com.vijay.commonservice.order.model;
 
 import lombok.*;
 

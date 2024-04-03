@@ -1,7 +1,5 @@
 package com.vijay.commonservice.order.model;
 
-import com.vijay.commonservice.model.OrderItemDto;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

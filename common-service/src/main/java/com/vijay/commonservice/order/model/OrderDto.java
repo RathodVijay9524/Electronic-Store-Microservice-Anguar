@@ -1,11 +1,10 @@
-package com.vijay.orderservice.entity;
+package com.vijay.commonservice.order.model;
 
-import com.vijay.commonservice.model.OrderItemDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import lombok.*;
+import com.vijay.commonservice.user.response.UserDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,13 +14,10 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Entity
-@Table(name="order_tbl")
-public class Order {
+public class OrderDto {
 
-    @Id
     private String orderId;
+    private String userId;
     private String orderStatus="PENDING";
     private String paymentStatus="NOTPAID";
     private int orderAmount;
@@ -31,12 +27,8 @@ public class Order {
     private Date orderedDate=new Date();
     private Date deliveredDate;
     //private UserDto user;
-    @Transient
     private List<OrderItemDto> orderItems = new ArrayList<>();
 
     //add this to get user information with order
-    private String userId;
-    private String productId;
-
-
+    private UserDto user;
 }
