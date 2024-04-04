@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionDetailsRepository extends MongoRepository<TransactionDetails, String> {
 
-    TransactionDetails findByOrderId(long orderId);
+    TransactionDetails findByOrderId(String orderId);
 }
