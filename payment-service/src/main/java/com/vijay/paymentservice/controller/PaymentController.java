@@ -18,7 +18,7 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<PaymentResponse> doPayment(@RequestBody PaymentRequest paymentRequest){
         PaymentResponse paymentResponse= paymentService.doPayment(paymentRequest);
         return new ResponseEntity<>(paymentResponse, HttpStatus.CREATED);
@@ -29,6 +29,12 @@ public class PaymentController {
                 paymentService.getPaymentDetailsByOrderId(orderId),
                 HttpStatus.OK
         );
+    }
+
+    @PutMapping("/{orderId}")
+    public ResponseEntity<PaymentResponse> updatePaymentStatus(@PathVariable String orderId, @RequestBody PaymentRequest paymentRequest) {
+        PaymentResponse response = paymentService.updatePayment(orderId, paymentRequest);
+        return ResponseEntity.ok(response);
     }
 
 

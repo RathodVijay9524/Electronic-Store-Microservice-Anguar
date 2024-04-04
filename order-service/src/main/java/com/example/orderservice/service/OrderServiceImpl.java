@@ -120,16 +120,19 @@ public class OrderServiceImpl implements OrderService {
 
             String orderStatus = null;
             try {
+                // int result = 10 / 0;
                 PaymentResponse response= paymentFeignClientService.doPayment(paymentRequest);
                 order.setPaymentStatus(response.getPaymentStatus());
                 logger.info("Payment done Successfully. Changing the Order status to PLACED");
-
                 orderStatus = "PLACED";
                 System.out.println("Payment successful");
             } catch (Exception e) {
                 logger.error("Error occurred in payment. Changing order status to PAYMENT_FAILED");
                 orderStatus = "PAYMENT_FAILED";
-                System.out.println("Payment failed: " + e.getMessage());
+                PaymentRequest paymentRequest1=new PaymentRequest();
+                paymentRequest1.setPaymentStatus(orderStatus);
+                paymentFeignClientService.updatePaymentStatus(order.getOrderId(),paymentRequest1);
+               System.out.println("Payment failed: " + e.getMessage());
             }
 
             order.setOrderStatus(orderStatus);

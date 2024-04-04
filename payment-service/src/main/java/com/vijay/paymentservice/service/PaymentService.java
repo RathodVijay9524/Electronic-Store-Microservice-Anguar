@@ -8,4 +8,6 @@ public interface PaymentService {
     PaymentResponse doPayment(PaymentRequest paymentRequest);
 
     PaymentResponse getPaymentDetailsByOrderId(String orderId);
+
+    PaymentResponse updatePayment(String orderId, PaymentRequest paymentRequest);
 }

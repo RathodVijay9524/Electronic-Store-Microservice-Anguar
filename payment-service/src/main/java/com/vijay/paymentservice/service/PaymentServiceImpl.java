@@ -46,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService{
         log.info("Getting payment details for the Order Id: {}", orderId);
 
         TransactionDetails transactionDetails
-                = transactionDetailsRepository.findByOrderId(Long.valueOf(orderId));
+                = transactionDetailsRepository.findByOrderId(orderId);
 
         PaymentResponse paymentResponse
                 = PaymentResponse.builder()
@@ -58,6 +58,16 @@ public class PaymentServiceImpl implements PaymentService{
                 .amount(transactionDetails.getAmount())
                 .build();
 
+        return paymentResponse;
+    }
+
+    @Override
+    public PaymentResponse updatePayment(String orderId, PaymentRequest paymentRequest) {
+        TransactionDetails paymentDetails= transactionDetailsRepository.findByOrderId(orderId);
+        paymentDetails.setPaymentStatus(paymentRequest.getPaymentStatus());
+        PaymentResponse paymentResponse=new PaymentResponse();
+        transactionDetailsRepository.save(paymentDetails);
+        BeanUtils.copyProperties(paymentDetails,paymentResponse);
         return paymentResponse;
     }
 }
