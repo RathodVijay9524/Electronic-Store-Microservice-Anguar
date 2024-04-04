@@ -1,5 +1,6 @@
 package com.vijay.commonservice.order.model;
 
+import com.vijay.commonservice.payment.model.PaymentMode;
 import lombok.*;
 
 
@@ -17,8 +18,7 @@ public class CreateOrderRequest {
     private String billingAddress;
     private String billingPhone;
     private String billingName;
-    private String orderStatus = "PENDING";
-    private String paymentStatus = "NOTPAID";
-
-
+    private String orderStatus = "CREATED";
+    private String paymentStatus = "NOT PAID";
+    private PaymentMode paymentMode;
 }
