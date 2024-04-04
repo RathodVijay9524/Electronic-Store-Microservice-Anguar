@@ -1,5 +1,6 @@
 package com.vijay.commonservice.order.model;
 
+import com.vijay.commonservice.payment.model.PaymentMode;
 import com.vijay.commonservice.user.response.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class OrderDto {
     private String billingName;
     private Date orderedDate=new Date();
     private Date deliveredDate;
+    private PaymentMode paymentMode;
     //private UserDto user;
     private List<OrderItemDto> orderItems = new ArrayList<>();
 

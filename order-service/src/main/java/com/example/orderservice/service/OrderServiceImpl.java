@@ -5,12 +5,15 @@ import com.example.orderservice.enitity.Order;
 import com.example.orderservice.repository.OrderRepository;
 import com.vijay.commonservice.exception.BadApiRequestException;
 import com.vijay.commonservice.order.model.*;
+import com.vijay.commonservice.payment.model.PaymentRequest;
+import com.vijay.commonservice.payment.model.PaymentResponse;
 import com.vijay.commonservice.response.PageableResponse;
 import com.vijay.commonservice.user.response.UserDto;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -29,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final CartFeignClient cartFeignClient;
     private final OrderItemFeignClientService orderItemFeignClientService;
     private final OrderRepository orderRepository;
+    private final PaymentFeignClientService paymentFeignClientService;
 
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
@@ -61,10 +65,11 @@ public class OrderServiceImpl implements OrderService {
                     .paymentStatus(req.getPaymentStatus())
                     .orderStatus(req.getOrderStatus())
                     .userId(req.getUserId())
+                    .paymentMode(req.getPaymentMode())
                     .user(user)
                     .build();
-            OrderItemDto orderItemDto1=new OrderItemDto();
-            BeanUtils.copyProperties(order,orderItemDto1);
+
+
 
             // Calculating order amount and creating order items
             AtomicReference<Integer> orderAmount = new AtomicReference<>(0);
@@ -80,9 +85,9 @@ public class OrderServiceImpl implements OrderService {
                                 .productId(cartItem.getProduct().getProductId())
                                 .product(cartItem.getProduct())
                                 .userId(cartItem.getUserId())
-                                .order(orderItemDto1.getOrder())
                                 .totalPrice(cartItem.getQuantity() * cartItem.getProduct().getDiscountedPrice())
                                 .build();
+                        productFeignClient.reduceProductQuantity(cartItem.getQuantity(), cartItem.getProduct().getProductId());
 
                         // Updating cart item via Feign Client
                         cartItemFeignClient.updateCartItem(cartItemId, cartItem);
@@ -104,9 +109,33 @@ public class OrderServiceImpl implements OrderService {
             // Clearing cart items
             cartFeignClient.clearCart(cartId);
             // Saving order and converting to OrderDto
-            Order savedOrder = orderRepository.save(order);
+
+             orderRepository.save(order);
+            logger.info("Calling Payment Service to complete the payment");
+            PaymentRequest paymentRequest= PaymentRequest.builder()
+                    .orderId(order.getOrderId())
+                    .amount(order.getOrderAmount())
+                    .paymentMode(order.getPaymentMode())
+                    .build();
+
+            String orderStatus = null;
+            try {
+                PaymentResponse response= paymentFeignClientService.doPayment(paymentRequest);
+                order.setPaymentStatus(response.getPaymentStatus());
+                logger.info("Payment done Successfully. Changing the Order status to PLACED");
+
+                orderStatus = "PLACED";
+                System.out.println("Payment successful");
+            } catch (Exception e) {
+                logger.error("Error occurred in payment. Changing order status to PAYMENT_FAILED");
+                orderStatus = "PAYMENT_FAILED";
+                System.out.println("Payment failed: " + e.getMessage());
+            }
+
+            order.setOrderStatus(orderStatus);
+            orderRepository.save(order);
             OrderDto orderDto = new OrderDto();
-            BeanUtils.copyProperties(savedOrder, orderDto);
+            BeanUtils.copyProperties(order, orderDto);
             logger.info("Order created successfully for userId: {} and orderId: {}", userId, orderDto.getOrderId());
             return orderDto;
         } catch (Exception ex) {

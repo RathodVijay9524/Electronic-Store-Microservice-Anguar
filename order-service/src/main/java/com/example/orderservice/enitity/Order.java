@@ -2,6 +2,7 @@ package com.example.orderservice.enitity;
 
 
 import com.vijay.commonservice.order.model.OrderItemDto;
+import com.vijay.commonservice.payment.model.PaymentMode;
 import com.vijay.commonservice.user.response.UserDto;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -42,6 +43,8 @@ public class Order {
     private Date orderedDate;
 
     private Date deliveredDate;
+
+    private PaymentMode paymentMode;
 
     private List<OrderItemDto> orderItems = new ArrayList<>();
 
