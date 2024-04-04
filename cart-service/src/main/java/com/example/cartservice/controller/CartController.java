@@ -26,9 +26,9 @@ public class CartController {
      * @return ResponseEntity containing the cart DTO with the added item.
      */
     @PostMapping("/add/{userId}")
-    public ResponseEntity<CartDto> addItemToCart(@PathVariable String userId, @RequestBody AddItemToCartRequest request) {
-        CartDto cartDto = cartService.createCart(userId, request);
-        return ResponseEntity.ok(cartDto);
+    public ResponseEntity<String> addItemToCart(@PathVariable String userId, @RequestBody AddItemToCartRequest request) {
+        String message = cartService.createCart(userId, request);
+        return ResponseEntity.ok(message);
     }
 
     /**

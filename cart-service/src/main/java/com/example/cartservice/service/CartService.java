@@ -15,7 +15,7 @@ public interface CartService {
      * @param request The request containing details of the item to be added to the cart.
      * @return The created cart DTO.
      */
-    CartDto createCart(String userId, AddItemToCartRequest request);
+    String createCart(String userId, AddItemToCartRequest request);
 
     /**
      * Removes an item from the cart using its ID.

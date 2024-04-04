@@ -33,7 +33,7 @@ public class CartServiceImpl implements CartService{
     private final CartItemFeignClient cartItemFeignClient;
 
     @Override
-    public CartDto createCart(String userId, AddItemToCartRequest request) {
+    public String createCart(String userId, AddItemToCartRequest request) {
         log.info("Creating cart for user {}", userId);
         // Extract necessary information from the request
         String productId = request.getProductId();
@@ -98,10 +98,10 @@ public class CartServiceImpl implements CartService{
             CartItemDto cartItemDto = new CartItemDto();
             BeanUtils.copyProperties(request, cartItemDto); // Copy properties from request to cartItemDto
             cartItemDto.setTotalPrice(quantity * product.getDiscountedPrice());
-            cartItemDto.setProduct(product);
             cartItemDto.setUserId(userIds);
+            cartItemDto.setProduct(product);
             cartItemDto.setCartId(cart.getCartId());
-            cart.getItems().add(cartItemDto);
+           // cart.getItems().add(cartItemDto);
 
             // Call the FeignClient to add the cart item
             cartItemFeignClient.addCartItemToCart(cartItemDto);
@@ -111,9 +111,8 @@ public class CartServiceImpl implements CartService{
         // Map and return the saved cart as CartDto
         CartDto cartDto = new CartDto();
         BeanUtils.copyProperties(savedCart, cartDto);
-        cartDto.setUser(user); // Set the user details
-        cartDto.setItems(savedCart.getItems()); // Set the updated cart items
-        return cartDto;
+         // Set the user details
+        return "Cart Created Successfully With Items, Check DB";
 
     }
 
