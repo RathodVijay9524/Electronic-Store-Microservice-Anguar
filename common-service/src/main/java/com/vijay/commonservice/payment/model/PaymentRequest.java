@@ -13,6 +13,7 @@ import java.time.Instant;
 public class PaymentRequest {
 
     private String orderId;
+    private String userId;
     private long amount;
     private String referenceNumber;
     private PaymentMode paymentMode;

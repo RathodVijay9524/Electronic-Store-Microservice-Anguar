@@ -19,6 +19,7 @@ public class TransactionDetails {
     @Id
     private String id;
     private String orderId;
+    private String userId;
     private String paymentMode;
     private String referenceNumber;
     private Instant paymentDate;

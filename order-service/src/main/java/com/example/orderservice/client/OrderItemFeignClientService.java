@@ -12,18 +12,20 @@ public interface OrderItemFeignClientService {
     @PostMapping("/api/order-items")
     OrderItemDto addOrderItem(@RequestBody OrderItemDto req);
 
+    @PutMapping("/api/order-items/{orderItemId}")
+    OrderItemDto updateOrderItem(@PathVariable String orderItemId, @RequestBody OrderItemDto req);
+
+
     @GetMapping("/api/order-items/order/{orderId}")
     List<OrderItemDto> getOrderItemsByOrderId(@PathVariable String orderId);
-
-    @DeleteMapping("/api/order-items/{orderItemId}")
-    Void deleteOrderItemByOrderItemId(@PathVariable String orderItemId);
 
     @DeleteMapping("/api/order-items/order/{orderId}")
     Void deleteOrderItemsByOrderId(@PathVariable String orderId);
 
-    @PutMapping("/api/order-items/{orderItemId}")
-    OrderItemDto updateOrderItem(@PathVariable String orderItemId, @RequestBody OrderItemDto req);
-
     @GetMapping("/api/order-items/{orderItemId}")
     OrderItemDto getOrderItemByOrderItemId(@PathVariable String orderItemId);
+
+    @DeleteMapping("/api/order-items/{orderItemId}")
+    Void deleteOrderItemByOrderItemId(@PathVariable String orderItemId);
+
 }

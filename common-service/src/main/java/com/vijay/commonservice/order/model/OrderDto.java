@@ -1,11 +1,9 @@
 package com.vijay.commonservice.order.model;
 
 import com.vijay.commonservice.payment.model.PaymentMode;
+import com.vijay.commonservice.payment.model.PaymentResponse;
 import com.vijay.commonservice.user.response.UserDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
@@ -30,6 +29,7 @@ public class OrderDto {
     private PaymentMode paymentMode;
     //private UserDto user;
     private List<OrderItemDto> orderItems = new ArrayList<>();
+    private PaymentResponse payments;
 
     //add this to get user information with order
     private UserDto user;

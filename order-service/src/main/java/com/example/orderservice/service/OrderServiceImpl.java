@@ -9,6 +9,7 @@ import com.vijay.commonservice.payment.model.PaymentRequest;
 import com.vijay.commonservice.payment.model.PaymentResponse;
 import com.vijay.commonservice.response.PageableResponse;
 import com.vijay.commonservice.user.response.UserDto;
+import com.vijay.commonservice.util.IdUtils;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,7 @@ public class OrderServiceImpl implements OrderService {
                     .paymentStatus(req.getPaymentStatus())
                     .orderStatus(req.getOrderStatus())
                     .userId(req.getUserId())
+                    .orderId(IdUtils.generateId())
                     .paymentMode(req.getPaymentMode())
                     .user(user)
                     .build();
@@ -76,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
             List<OrderItemDto> orderItems = cartItems.stream()
                     .map(cartItem -> {
                         String cartItemId = cartItem.getCartItemId();
-
+                        System.out.println(order.getOrderId());
                         logger.info("Processing cart item: {}", cartItemId);
 
                         // Creating OrderItemDto
@@ -84,6 +86,7 @@ public class OrderServiceImpl implements OrderService {
                                 .quantity(cartItem.getQuantity())
                                 .productId(cartItem.getProduct().getProductId())
                                 .product(cartItem.getProduct())
+                                .orderId(order.getOrderId())
                                 .userId(cartItem.getUserId())
                                 .totalPrice(cartItem.getQuantity() * cartItem.getProduct().getDiscountedPrice())
                                 .build();
@@ -114,13 +117,14 @@ public class OrderServiceImpl implements OrderService {
             logger.info("Calling Payment Service to complete the payment");
             PaymentRequest paymentRequest= PaymentRequest.builder()
                     .orderId(order.getOrderId())
+                    .userId(user.getUserId())
                     .amount(order.getOrderAmount())
                     .paymentMode(order.getPaymentMode())
                     .build();
 
             String orderStatus = null;
+
             try {
-                // int result = 10 / 0;
                 PaymentResponse response= paymentFeignClientService.doPayment(paymentRequest);
                 order.setPaymentStatus(response.getPaymentStatus());
                 logger.info("Payment done Successfully. Changing the Order status to PLACED");
@@ -129,15 +133,19 @@ public class OrderServiceImpl implements OrderService {
             } catch (Exception e) {
                 logger.error("Error occurred in payment. Changing order status to PAYMENT_FAILED");
                 orderStatus = "PAYMENT_FAILED";
-                PaymentRequest paymentRequest1=new PaymentRequest();
-                paymentRequest1.setPaymentStatus(orderStatus);
-                paymentFeignClientService.updatePaymentStatus(order.getOrderId(),paymentRequest1);
+                PaymentResponse paymentDetails= paymentFeignClientService.getPaymentDetailsByOrderId(order.getOrderId());
+                PaymentRequest paymentResponse=new PaymentRequest();
+                paymentResponse.setPaymentStatus(orderStatus);
+                paymentFeignClientService.updatePaymentStatus(paymentDetails.getPaymentId(),paymentResponse);
                System.out.println("Payment failed: " + e.getMessage());
             }
 
+            PaymentResponse paymentDetails= paymentFeignClientService.getPaymentDetailsByOrderId(order.getOrderId());
+            order.setPayments(paymentDetails);
             order.setOrderStatus(orderStatus);
             orderRepository.save(order);
             OrderDto orderDto = new OrderDto();
+
             BeanUtils.copyProperties(order, orderDto);
             logger.info("Order created successfully for userId: {} and orderId: {}", userId, orderDto.getOrderId());
             return orderDto;
@@ -147,14 +155,33 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    @Override
-    public void removeOrder(String orderId) {
-
-    }
 
     @Override
     public List<OrderDto> getOrdersOfUser(String userId) {
-        return List.of();
+        List<Order> orders= orderRepository.findByUserId(userId);
+        List<OrderDto> OrderResponse= orders.stream().map(order -> {
+            OrderDto orderDto = new OrderDto();
+            BeanUtils.copyProperties(order, orderDto);
+            return orderDto;
+        }).collect(Collectors.toList());
+        return OrderResponse;
+    }
+
+    @Override
+    public OrderDto getOrderByOrderId(String orderId) {
+        Order order= orderRepository.findById(orderId).get();
+        PaymentResponse paymentDetails= paymentFeignClientService.getPaymentDetailsByOrderId(orderId);
+        OrderDto orderDto=new OrderDto();
+        orderDto.setPayments(paymentDetails);
+        BeanUtils.copyProperties(order, orderDto);
+        return orderDto;
+    }
+
+    @Override
+    public String deleteOrderWithOrderItemsByOrderId(String orderId) {
+        orderItemFeignClientService.deleteOrderItemsByOrderId(orderId);
+        orderRepository.deleteById(orderId);
+        return "Order Deleted Successfully With Order Items";
     }
 
     @Override
@@ -165,5 +192,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updateOrder(String orderId, OrderUpdateRequest request) {
         return null;
+    }
+
+    @Override
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders= orderRepository.findAll();
+        List<OrderDto> ordersList= orders.stream().map(order -> {
+            OrderDto orderDto = new OrderDto();
+            BeanUtils.copyProperties(order, orderDto);
+            return orderDto;
+        }).collect(Collectors.toList());
+        return ordersList;
     }
 }

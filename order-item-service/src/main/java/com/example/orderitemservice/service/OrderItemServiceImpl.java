@@ -22,6 +22,7 @@ public class OrderItemServiceImpl implements OrderItemService{
         OrderItem orderItem = OrderItem.builder()
                 .orderItemId(req.getOrderItemId())
                 .quantity(req.getQuantity())
+                .orderId(req.getOrderId())
                 .totalPrice(req.getTotalPrice())
                 .productId(req.getProductId())
                 .userId(req.getUserId())
@@ -33,6 +34,7 @@ public class OrderItemServiceImpl implements OrderItemService{
                 .orderItemId(orderItem.getOrderItemId())
                 .quantity(orderItem.getQuantity())
                 .productId(orderItem.getProductId())
+                .orderId(orderItem.getOrderId())
                 .userId(orderItem.getUserId())
                 .totalPrice(orderItem.getTotalPrice())
                 .build();
