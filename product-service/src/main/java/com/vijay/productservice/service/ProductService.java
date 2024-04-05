@@ -8,6 +8,8 @@ import java.util.List;
 public interface ProductService {
 
 
+
+    void increaseQuantity(String productId, long quantity);
     void reduceQuantity(String productId, long quantity);
     /**
      * Creates a new product.
