@@ -17,6 +17,7 @@ public class OrderItemDto {
 
     private String orderItemId;
     private String userId;
+    private String orderId;
     private String productId;
     private int quantity;
     private int totalPrice;

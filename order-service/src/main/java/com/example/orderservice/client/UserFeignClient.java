@@ -1,9 +1,12 @@
 package com.example.orderservice.client;
 
+import com.vijay.commonservice.payment.model.PaymentResponse;
 import com.vijay.commonservice.user.response.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @FeignClient(name = "AUTH-SERVICE")
 public interface UserFeignClient {
@@ -14,5 +17,7 @@ public interface UserFeignClient {
 
     @GetMapping("/api/auth/users/{userId}")
     UserDto getUser(@PathVariable String userId);
+
+
 
 }

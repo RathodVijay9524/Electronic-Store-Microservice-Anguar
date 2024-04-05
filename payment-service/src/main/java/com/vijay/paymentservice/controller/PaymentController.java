@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/payment")
 @AllArgsConstructor
@@ -23,17 +25,20 @@ public class PaymentController {
         PaymentResponse paymentResponse= paymentService.doPayment(paymentRequest);
         return new ResponseEntity<>(paymentResponse, HttpStatus.CREATED);
     }
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<PaymentResponse> getPaymentDetailsByOrderId(@PathVariable String orderId) {
-        return new ResponseEntity<>(
-                paymentService.getPaymentDetailsByOrderId(orderId),
-                HttpStatus.OK
-        );
+
+    @GetMapping("/user/{userId}")
+    public List<PaymentResponse> getPaymentDetailsByUserId(@PathVariable String userId) {
+        return paymentService.getPaymentDetailsByUserId(userId);
     }
 
-    @PutMapping("/{orderId}")
-    public ResponseEntity<PaymentResponse> updatePaymentStatus(@PathVariable String orderId, @RequestBody PaymentRequest paymentRequest) {
-        PaymentResponse response = paymentService.updatePayment(orderId, paymentRequest);
+    @GetMapping("/order/{orderId}")
+    public PaymentResponse getPaymentDetailsByOrderId(@PathVariable String orderId) {
+        return paymentService.getPaymentDetailsByOrderId(orderId);
+    }
+
+    @PutMapping("/{paymentId}")
+    public ResponseEntity<PaymentResponse> updatePaymentStatus(@PathVariable String paymentId, @RequestBody PaymentRequest paymentRequest) {
+        PaymentResponse response = paymentService.updatePayment(paymentId, paymentRequest);
         return ResponseEntity.ok(response);
     }
 
