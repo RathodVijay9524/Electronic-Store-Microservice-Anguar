@@ -7,6 +7,7 @@ import com.vijay.commonservice.order.model.AddItemToCartRequest;
 ;
 import com.vijay.commonservice.order.model.CartItemDto;
 import com.vijay.commonservice.user.exception.ResourceNotFoundException;
+import com.vijay.commonservice.util.IdUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +27,7 @@ public class CartItemServiceImpl implements CartItemService{
         log.info("Adding cart item for user {}", request.getUserId());
         CartItem cartItem = new CartItem();
         cartItem.setTotalPrice(request.getTotalPrice());
+        cartItem.setCartItemId(IdUtils.generateCartItemId());
         cartItem.setQuantity(request.getQuantity());
         cartItem.setCartId(request.getCartId());
         cartItem.setProduct(request.getProduct());

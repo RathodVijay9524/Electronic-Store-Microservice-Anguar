@@ -89,6 +89,7 @@ public class CartServiceImpl implements CartService{
                         item.setQuantity(quantity);
                         item.setTotalPrice(quantity * product.getDiscountedPrice());
                         item.setCartId(cart.getCartId());
+
                         // Use the old CartItemId
                         System.out.println("Old CartItemId: " + oldCartItemIdRef.get());
                         cartItemFeignClient.updateCartItem(oldCartItemIdRef.get(),item);

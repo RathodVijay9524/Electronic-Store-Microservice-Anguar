@@ -17,4 +17,10 @@ public class IdUtils {
         //System.out.println( pwd );
         return pwd;
     }
+    public static String generateCartItemId(){
+        String characters = "0123456789GFGFGNBWERTGHBCVCVCV9877745";
+        String pwd = RandomStringUtils.random( 7, characters );
+        //System.out.println( pwd );
+        return pwd;
+    }
 }
