@@ -49,6 +49,20 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
+    @Override
+    public void increaseQuantity(String productId, long quantity) {
+        // Retrieve product by ID from the repository
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Increase the quantity and save the updated product
+        int currentQuantity = product.getQuantity();
+        product.setQuantity((int) (currentQuantity + quantity));
+        System.out.println("product Quantity incrissed");
+        productRepository.save(product);
+    }
+
+
     // Method to create a new product
     @Override
     public ProductResponse createProduct(ProductRequest productRequest) {

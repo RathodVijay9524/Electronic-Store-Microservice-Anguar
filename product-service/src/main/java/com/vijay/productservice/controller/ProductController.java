@@ -22,13 +22,7 @@ public class ProductController {
     // ProductService for handling product-related operations
     private final ProductService productService;
 
-    // Welcome message endpoint
-    @GetMapping("/hi")
-    public String welcome(){
-        return "Hi Welcome to ....";
-    }
-
-    // Endpoint to fetch products by category ID
+  // Endpoint to fetch products by category ID
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable String categoryId) {
         logger.info("Fetching products by category with ID: {}", categoryId);
@@ -99,6 +93,18 @@ public class ProductController {
         productService.deleteProduct(productId);
         logger.info("Product deleted successfully");
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/increaseQuantity/{productId}")
+    public ResponseEntity<String> increaseProductQuantity(
+            @RequestParam long quantity,
+            @PathVariable("productId") String productId) {
+        try {
+            productService.increaseQuantity(productId, quantity);
+            return new ResponseEntity<>("Product quantity increased successfully", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     // Endpoint to reduce the quantity of a product

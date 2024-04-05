@@ -133,6 +133,11 @@ public class OrderServiceImpl implements OrderService {
             } catch (Exception e) {
                 logger.error("Error occurred in payment. Changing order status to PAYMENT_FAILED");
                 orderStatus = "PAYMENT_FAILED";
+                cartItems.stream().map(cartItem ->{
+                    OrderItemDto orderItemDto = OrderItemDto.builder().build();
+                    productFeignClient.increaseProductQuantity(cartItem.getQuantity(),cartItem.getProduct().getProductId());
+                    return orderItemDto;
+                }).toList();
                 PaymentResponse paymentDetails= paymentFeignClientService.getPaymentDetailsByOrderId(order.getOrderId());
                 PaymentRequest paymentResponse=new PaymentRequest();
                 paymentResponse.setPaymentStatus(orderStatus);
