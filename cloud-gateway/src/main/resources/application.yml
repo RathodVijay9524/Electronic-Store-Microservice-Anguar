@@ -57,8 +57,12 @@ spring:
           filters:
             - AuthenticationFilter
 
-
-
+        - id: CHAT-APP
+          uri: http://localhost:9099
+          predicates:
+            - Path=/api/chat/**,/api/rags/**,/api/mcp/**,/api/mcp-servers/**,/api/debug/**,/api/test/**
+          filters:
+            - AuthenticationFilter
 
 
         - id: AUTH-SERVICE
